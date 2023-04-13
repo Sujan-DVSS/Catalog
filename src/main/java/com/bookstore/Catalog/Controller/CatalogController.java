@@ -1,6 +1,8 @@
 package com.bookstore.Catalog.Controller;
 
 import com.bookstore.Catalog.Entity.Catalog;
+import com.bookstore.Catalog.Exceptions.GlobalExceptionController;
+import com.bookstore.Catalog.Exceptions.ProductNotFoundException;
 import com.bookstore.Catalog.Repository.CatalogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,13 @@ public class CatalogController {
     private CatalogRepository catalogRepository;
 
     @GetMapping("/products/{code}")
-    public @ResponseBody Catalog getBookByISBN(@PathVariable String code){
-        return catalogRepository.findByCode(code);
+    public ResponseEntity<Catalog> getBookByISBN(@PathVariable String code){
+        Catalog catalog = catalogRepository.findByCode(code);
+        if(catalog == null){
+            throw new ProductNotFoundException("Product with code " + code + " not found");
+        }
+            return ResponseEntity.ok(catalogRepository.findByCode(code));
+
     }
     @PostMapping("/products")
     public void addCatalog(@RequestBody Catalog catalog){
