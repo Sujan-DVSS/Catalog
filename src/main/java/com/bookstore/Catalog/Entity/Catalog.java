@@ -5,6 +5,10 @@ import org.hibernate.annotations.Type;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -19,12 +23,17 @@ public class Catalog {
     @Type(type = "uuid-char")
     private UUID id = UUID.randomUUID();
     @Column(name = "CODE", unique = true)
+    @NotEmpty(message = "Product code must not be null/empty")
+
     private String code;
+    @NotEmpty(message = "Product name must not be null/empty")
     private String name;
     private String description;
     private String image_url;
-    private double price;
-    private double discount;
+    @NotNull(message = "Product price must not be null/empty")
+    @DecimalMin("0.1")
+    private BigDecimal price;
+    private BigDecimal discount;
     private double salePrice;
 
     public UUID getId() {
@@ -67,19 +76,19 @@ public class Catalog {
         this.image_url = image_url;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public double getDiscount() {
+    public BigDecimal getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }
 
