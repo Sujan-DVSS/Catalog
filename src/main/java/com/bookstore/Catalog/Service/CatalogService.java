@@ -4,7 +4,11 @@ import com.bookstore.Catalog.Entity.Catalog;
 import com.bookstore.Catalog.Exceptions.ProductAlreadyExistsException;
 import com.bookstore.Catalog.Exceptions.ProductNotFoundException;
 import com.bookstore.Catalog.Repository.CatalogRepository;
+import com.bookstore.Catalog.Response.PageResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CatalogService {
     final CatalogRepository catalogRepository;
+
+    private final static int PAGESIZE = 25;
 
     public Catalog getCatalogByCode(String code){
         return catalogRepository.findByCode(code);
@@ -45,5 +51,15 @@ public class CatalogService {
 
     public void deleteCatalog(String code) {
         catalogRepository.delete(catalogRepository.findByCode(code));
+    }
+
+    public PageResult getBooksByPage(int pageNumber) {
+        Pageable pageable = PageRequest.of(getPageNumberOneIndexed(pageNumber), PAGESIZE);
+        Page<Catalog> catalogsOnPage = catalogRepository.findAll(pageable);
+        return new PageResult(catalogsOnPage);
+       // return catalogsOnPage;
+    }
+    public int getPageNumberOneIndexed(int pageNo){
+        return (pageNo > 0 ? pageNo-1: -1);
     }
 }
