@@ -57,7 +57,15 @@ public class CatalogService {
         Pageable pageable = PageRequest.of(getPageNumberOneIndexed(pageNumber), PAGESIZE);
         Page<Catalog> catalogsOnPage = catalogRepository.findAll(pageable);
         return new PageResult(catalogsOnPage);
+        //catalogRepository
        // return catalogsOnPage;
+    }
+
+    public PageResult searchBooksByKeyword(String keyword, int pageNumber){
+        int num = getPageNumberOneIndexed(pageNumber);
+        Pageable pageable = PageRequest.of(num,PAGESIZE);
+        Page<Catalog> page = catalogRepository.findAll(pageable);
+        return new PageResult(catalogRepository.findByTitleContaining(keyword,pageable));
     }
     public int getPageNumberOneIndexed(int pageNo){
         return (pageNo > 0 ? pageNo-1: -1);

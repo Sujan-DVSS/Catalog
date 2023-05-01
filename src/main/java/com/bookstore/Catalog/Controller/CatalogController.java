@@ -47,6 +47,11 @@ public class CatalogController {
     public List<Catalog> getAllBooks(){
         return catalogService.getAllCatalogs();
     }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<PageResult> getBooksByTitle(@RequestParam(name = "query")String bookTitle, @RequestParam(name = "page")int pageNumber){
+        return ResponseEntity.ok(catalogService.searchBooksByKeyword(bookTitle,pageNumber));
+    }
     @PostMapping("/products")
     public ResponseEntity<Catalog> addCatalog(@RequestBody @Valid Catalog catalog){
         Catalog postedCatalog = catalogService.createCatalog(catalog);
